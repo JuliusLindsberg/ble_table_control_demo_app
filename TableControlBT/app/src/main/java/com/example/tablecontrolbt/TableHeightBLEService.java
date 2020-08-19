@@ -76,11 +76,11 @@ public final class TableHeightBLEService extends Service
         }
         Log.i("init()", "MID");
         adapter = manager.getAdapter();
-        scanner = adapter.getBluetoothLeScanner();
         if(scanner == null)
         {
-            Log.i("asdasd", "SCANNER WAS NULL");
+            Log.i("init()", "SCANNER WAS NULL");
         }
+        scanner = adapter.getBluetoothLeScanner();
         Log.i("init()", "END");
         return true;
     }
@@ -112,18 +112,20 @@ public final class TableHeightBLEService extends Service
             }
             List<BluetoothGattCharacteristic> gattCharacteristics = controlService.getCharacteristics();
             //only one characteristic in this service
-            if(gattCharacteristics == null)
+            if(gattCharacteristics.get(0) == null)
             {
                 Log.i("onServicesDiscovered()","No characteristics found");
             }
-            //BluetoothGattCharacteristic characteristic = gattCharacteristics.get(0);
-            BluetoothGattCharacteristic characteristic = controlService.getCharacteristic(UUID_DESK_CONTROL_SERVICE);
+            BluetoothGattCharacteristic characteristic = gattCharacteristics.get(0);
+            //BluetoothGattCharacteristic characteristic = controlService.getCharacteristic(UUID_DESK_CONTROL_SERVICE);
+            Log.i("CHVALUE: ", String.valueOf(characteristic.getValue()));
+            Log.i("CHUUID", characteristic.getUuid().toString());
             if(characteristic == null)
             {
                 Log.i("onServicesDiscovered()","No characteristic of index 0 found");
             }
             //desk height saved as little-endian bytes
-            byte[] gattCharacteristicData = {(byte) (char)(tableHeight)};//, (byte) ((tableHeight >> 8) & 0xff)};
+            byte[] gattCharacteristicData = {(byte) ((byte)tableHeight & 0xff), (byte) ((byte)(tableHeight >> 8) & 0xff)};
             characteristic.setValue(gattCharacteristicData);
             gatt.writeCharacteristic(characteristic);
             Log.i("CHARACTERS", String.valueOf((short)gattCharacteristicData[0]));// + " " + " " + (short)gattCharacteristicData[1]);
@@ -142,6 +144,8 @@ public final class TableHeightBLEService extends Service
 
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             Log.i("onCharacteristicWrite()", "EMPTY");
+            gatt.close();
+            gatt.disconnect();
         }
     };
     ScanCallback scanCallBack = new ScanCallback() {
