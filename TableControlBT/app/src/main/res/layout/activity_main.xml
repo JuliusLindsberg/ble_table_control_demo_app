@@ -7,6 +7,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -21,17 +22,26 @@
         <include layout="@layout/content_main" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/slider_lable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Table Height:" />
+            android:text="Table Height:"
+            android:textColor="#FFFFFF" />
 
         <SeekBar
             android:id="@+id/tableHeight"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:max="390"
             android:progress="50"
             android:saveEnabled="true" />
+
+        <TextView
+            android:id="@+id/min_value"
+            android:layout_width="match_parent"
+            android:layout_height="62dp"
+            android:text="  60cm                                                                                        110 cm"
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/button"
